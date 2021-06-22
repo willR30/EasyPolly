@@ -96,7 +96,7 @@ public class Vista extends javax.swing.JFrame {
                 rSButtonMetro3ActionPerformed(evt);
             }
         });
-
+		
         canvas_pic.setBackground(new java.awt.Color(70, 70, 70));
         canvas_pic.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
         canvas_pic.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
@@ -210,7 +210,7 @@ public class Vista extends javax.swing.JFrame {
     private void rSButtonMetro3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSButtonMetro3ActionPerformed
         // TODO add your handling code here:
         //here show the instruction of software
-        JOptionPane.showMessageDialog(null,"It's no avilable");
+        JOptionPane.showMessageDialog(null,"Not available");
     }//GEN-LAST:event_rSButtonMetro3ActionPerformed
 
     private Point mouseLocationInImage = null;
@@ -219,14 +219,14 @@ public class Vista extends javax.swing.JFrame {
         if(mouseLocationInImage != null){
             int newXLocation = evt.getX() + mouseLocationInImage.x;
             int newYLocation = evt.getY() + mouseLocationInImage.y;
-            int insideAmmount = 30;
+            int outsideAmmount = 30;
             
             //TODO: Fix behavior when mouse moves fast
-            if(newXLocation > 0 - insideAmmount && newXLocation + canvas_pic.getImageWidth() < canvas_pic.getWidth() + insideAmmount) {
+            if(newXLocation > 0 - outsideAmmount && newXLocation + canvas_pic.getImageWidth() < canvas_pic.getWidth() + outsideAmmount) {
                 this.canvas_pic.setImageXCoordinate(newXLocation);
             }
             
-            if(newYLocation > 0 - insideAmmount && newYLocation + canvas_pic.getImageHeight() < canvas_pic.getHeight() + insideAmmount) {
+            if(newYLocation > 0 - outsideAmmount && newYLocation + canvas_pic.getImageHeight() < canvas_pic.getHeight() + outsideAmmount) {
                 this.canvas_pic.setImageYCoordinate(newYLocation);
             }
         }
