@@ -5,7 +5,10 @@
  */
 package easypolly;
 
+import java.awt.Cursor;
 import java.awt.Image;
+import java.awt.Point;
+import java.awt.Rectangle;
 import java.io.File;
 import java.net.MalformedURLException;
 import javax.swing.ImageIcon;
@@ -47,14 +50,14 @@ public class Vista extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         rSButtonMetro3 = new rsbuttom.RSButtonMetro();
-        lbl_pic = new javax.swing.JLabel();
+        canvas_pic = new easypolly.ImageCanvas();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setBackground(new java.awt.Color(49, 51, 53));
         setSize(new java.awt.Dimension(800, 600));
 
         jPanel2.setBackground(new java.awt.Color(49, 51, 53));
-        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
+        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(null));
 
         rSButtonMetro1.setText("Load picture");
         rSButtonMetro1.setColorHover(new java.awt.Color(255, 0, 0));
@@ -93,17 +96,43 @@ public class Vista extends javax.swing.JFrame {
                 rSButtonMetro3ActionPerformed(evt);
             }
         });
+		
+        canvas_pic.setBackground(new java.awt.Color(70, 70, 70));
+        canvas_pic.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
+        canvas_pic.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
+            public void mouseDragged(java.awt.event.MouseEvent evt) {
+                canvas_picMouseDragged(evt);
+            }
+            public void mouseMoved(java.awt.event.MouseEvent evt) {
+                canvas_picMouseMoved(evt);
+            }
+        });
+        canvas_pic.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mousePressed(java.awt.event.MouseEvent evt) {
+                canvas_picMousePressed(evt);
+            }
+            public void mouseReleased(java.awt.event.MouseEvent evt) {
+                canvas_picMouseReleased(evt);
+            }
+        });
 
-        lbl_pic.setForeground(new java.awt.Color(0, 0, 0));
-        lbl_pic.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED, null, new java.awt.Color(102, 102, 102), null, null));
-        lbl_pic.setCursor(new java.awt.Cursor(java.awt.Cursor.HAND_CURSOR));
+        javax.swing.GroupLayout canvas_picLayout = new javax.swing.GroupLayout(canvas_pic);
+        canvas_pic.setLayout(canvas_picLayout);
+        canvas_picLayout.setHorizontalGroup(
+            canvas_picLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        canvas_picLayout.setVerticalGroup(
+            canvas_picLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 456, Short.MAX_VALUE)
+        );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addComponent(rSButtonMetro1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(6, 6, 6)
@@ -115,25 +144,26 @@ public class Vista extends javax.swing.JFrame {
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jLabel1)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(lbl_pic, javax.swing.GroupLayout.PREFERRED_SIZE, 620, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jLabel2)))))
+                                .addGap(630, 630, 630)
+                                .addComponent(jLabel2))))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(canvas_pic, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
                 .addGap(28, 28, 28))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(jLabel2)
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(rSButtonMetro1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(rSButtonMetro2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(rSButtonMetro3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(6, 6, 6)
-                        .addComponent(jLabel1)
-                        .addGap(4, 4, 4)
-                        .addComponent(lbl_pic, javax.swing.GroupLayout.PREFERRED_SIZE, 480, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(rSButtonMetro1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rSButtonMetro2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(rSButtonMetro3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(6, 6, 6)
+                .addComponent(jLabel1)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(canvas_pic, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(jLabel2)
                 .addGap(2, 2, 2))
         );
 
@@ -167,7 +197,7 @@ public class Vista extends javax.swing.JFrame {
             ImageIcon i = null;
             try {
                 i = new ImageIcon(f.toURI().toURL());
-                this.lbl_pic.setIcon(new ImageIcon(i.getImage()));
+                this.canvas_pic.setDisplayImage(i.getImage());
             } catch (MalformedURLException ex) {
                 JOptionPane.showMessageDialog(null, "Error en el formato o al encontrar la imagen.");
                 //Logger.getLogger(CargarImagenes.class.getName()).log(Level.SEVERE, null, ex);
@@ -180,8 +210,49 @@ public class Vista extends javax.swing.JFrame {
     private void rSButtonMetro3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rSButtonMetro3ActionPerformed
         // TODO add your handling code here:
         //here show the instruction of software
-        JOptionPane.showMessageDialog(null,"Its no avilable");
+        JOptionPane.showMessageDialog(null,"Not available");
     }//GEN-LAST:event_rSButtonMetro3ActionPerformed
+
+    private Point mouseLocationInImage = null;
+    
+    private void canvas_picMouseDragged(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_canvas_picMouseDragged
+        if(mouseLocationInImage != null){
+            int newXLocation = evt.getX() + mouseLocationInImage.x;
+            int newYLocation = evt.getY() + mouseLocationInImage.y;
+            int outsideAmmount = 30;
+            
+            //TODO: Fix behavior when mouse moves fast
+            if(newXLocation > 0 - outsideAmmount && newXLocation + canvas_pic.getImageWidth() < canvas_pic.getWidth() + outsideAmmount) {
+                this.canvas_pic.setImageXCoordinate(newXLocation);
+            }
+            
+            if(newYLocation > 0 - outsideAmmount && newYLocation + canvas_pic.getImageHeight() < canvas_pic.getHeight() + outsideAmmount) {
+                this.canvas_pic.setImageYCoordinate(newYLocation);
+            }
+        }
+    }//GEN-LAST:event_canvas_picMouseDragged
+
+    private void canvas_picMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_canvas_picMousePressed
+
+        if(canvas_pic.getImageBounds().contains(evt.getPoint())){
+            mouseLocationInImage = new Point(this.canvas_pic.getImageXCoordinate() - evt.getX(), 
+                    this.canvas_pic.getImageYCoordinate() - evt.getY());
+        }
+    }//GEN-LAST:event_canvas_picMousePressed
+
+    private void canvas_picMouseReleased(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_canvas_picMouseReleased
+        mouseLocationInImage = null;
+    }//GEN-LAST:event_canvas_picMouseReleased
+
+    private void canvas_picMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_canvas_picMouseMoved
+        Rectangle imageBounds = canvas_pic.getImageBounds();
+        
+        if(imageBounds != null && imageBounds.contains(evt.getPoint())){
+            canvas_pic.setCursor(new Cursor(Cursor.MOVE_CURSOR));
+        } else {
+            canvas_pic.setCursor(new Cursor(Cursor.DEFAULT_CURSOR));
+        }
+    }//GEN-LAST:event_canvas_picMouseMoved
 
     /**
      * @param args the command line arguments
@@ -219,10 +290,10 @@ public class Vista extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private easypolly.ImageCanvas canvas_pic;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JPanel jPanel2;
-    private javax.swing.JLabel lbl_pic;
     private rsbuttom.RSButtonMetro rSButtonMetro1;
     private rsbuttom.RSButtonMetro rSButtonMetro2;
     private rsbuttom.RSButtonMetro rSButtonMetro3;
