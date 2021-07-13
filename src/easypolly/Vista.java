@@ -9,11 +9,13 @@ import java.awt.Cursor;
 import java.awt.Image;
 import java.awt.Point;
 import java.awt.Rectangle;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.MalformedURLException;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.UIManager;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
@@ -34,6 +36,8 @@ public class Vista extends javax.swing.JFrame {
         this.setResizable(false);
         this.setTitle("EasyPolly");
     }
+    
+    private BufferedImage originalImage = null;
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -44,6 +48,15 @@ public class Vista extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        panel_imageProperties = new javax.swing.JPanel();
+        jLabel3 = new javax.swing.JLabel();
+        slider_imageBrightness = new javax.swing.JSlider();
+        jLabel4 = new javax.swing.JLabel();
+        slider_imageScale = new javax.swing.JSlider();
+        jLabel5 = new javax.swing.JLabel();
+        chk_centerH = new javax.swing.JCheckBox();
+        chk_centerV = new javax.swing.JCheckBox();
+        jLabel6 = new javax.swing.JLabel();
         jPanel2 = new javax.swing.JPanel();
         rSButtonMetro1 = new rsbuttom.RSButtonMetro();
         rSButtonMetro2 = new rsbuttom.RSButtonMetro();
@@ -56,8 +69,96 @@ public class Vista extends javax.swing.JFrame {
         setBackground(new java.awt.Color(49, 51, 53));
         setSize(new java.awt.Dimension(800, 600));
 
+        panel_imageProperties.setBackground(new java.awt.Color(210, 210, 210));
+
+        jLabel3.setText("Image brightness");
+
+        slider_imageBrightness.setPaintLabels(true);
+        slider_imageBrightness.setPaintTicks(true);
+        slider_imageBrightness.setToolTipText("");
+        slider_imageBrightness.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                slider_imageBrightnessStateChanged(evt);
+            }
+        });
+
+        jLabel4.setText("Image scale");
+
+        slider_imageScale.setMaximum(150);
+        slider_imageScale.setMinimum(25);
+        slider_imageScale.setPaintLabels(true);
+        slider_imageScale.setPaintTicks(true);
+        slider_imageScale.setToolTipText("");
+        slider_imageScale.addChangeListener(new javax.swing.event.ChangeListener() {
+            public void stateChanged(javax.swing.event.ChangeEvent evt) {
+                slider_imageScaleStateChanged(evt);
+            }
+        });
+
+        jLabel5.setFont(new java.awt.Font("Yu Gothic", 0, 16)); // NOI18N
+        jLabel5.setText("Image properties");
+
+        chk_centerH.setSelected(true);
+        chk_centerH.setText("Center horizontally");
+        chk_centerH.setEnabled(false);
+        chk_centerH.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chk_centerHActionPerformed(evt);
+            }
+        });
+
+        chk_centerV.setSelected(true);
+        chk_centerV.setText("Center vertically");
+        chk_centerV.setEnabled(false);
+        chk_centerV.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                chk_centerVActionPerformed(evt);
+            }
+        });
+
+        jLabel6.setText("Image position");
+
+        javax.swing.GroupLayout panel_imagePropertiesLayout = new javax.swing.GroupLayout(panel_imageProperties);
+        panel_imageProperties.setLayout(panel_imagePropertiesLayout);
+        panel_imagePropertiesLayout.setHorizontalGroup(
+            panel_imagePropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panel_imagePropertiesLayout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(panel_imagePropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(chk_centerV)
+                    .addComponent(chk_centerH)
+                    .addComponent(jLabel3)
+                    .addComponent(slider_imageBrightness, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel4)
+                    .addComponent(slider_imageScale, javax.swing.GroupLayout.PREFERRED_SIZE, 150, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel5)
+                    .addComponent(jLabel6))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+        panel_imagePropertiesLayout.setVerticalGroup(
+            panel_imagePropertiesLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(panel_imagePropertiesLayout.createSequentialGroup()
+                .addGap(10, 10, 10)
+                .addComponent(jLabel5)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel3)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(slider_imageBrightness, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel4)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(slider_imageScale, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel6)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(chk_centerH)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(chk_centerV)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+        );
+
         jPanel2.setBackground(new java.awt.Color(49, 51, 53));
-        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(null));
+        jPanel2.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(0, 0, 0)));
 
         rSButtonMetro1.setText("Load picture");
         rSButtonMetro1.setColorHover(new java.awt.Color(255, 0, 0));
@@ -96,7 +197,7 @@ public class Vista extends javax.swing.JFrame {
                 rSButtonMetro3ActionPerformed(evt);
             }
         });
-		
+
         canvas_pic.setBackground(new java.awt.Color(70, 70, 70));
         canvas_pic.setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(255, 255, 255)));
         canvas_pic.addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
@@ -124,7 +225,7 @@ public class Vista extends javax.swing.JFrame {
         );
         canvas_picLayout.setVerticalGroup(
             canvas_picLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 456, Short.MAX_VALUE)
+            .addGap(0, 478, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -161,7 +262,7 @@ public class Vista extends javax.swing.JFrame {
                 .addGap(6, 6, 6)
                 .addComponent(jLabel1)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(canvas_pic, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(canvas_pic, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(jLabel2)
                 .addGap(2, 2, 2))
@@ -171,10 +272,16 @@ public class Vista extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(0, 0, 0)
+                .addComponent(jPanel2, javax.swing.GroupLayout.PREFERRED_SIZE, 682, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 2, Short.MAX_VALUE)
+                .addComponent(panel_imageProperties, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(0, 0, 0))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addComponent(panel_imageProperties, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
             .addComponent(jPanel2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
@@ -197,8 +304,16 @@ public class Vista extends javax.swing.JFrame {
             ImageIcon i = null;
             try {
                 i = new ImageIcon(f.toURI().toURL());
-                this.canvas_pic.setDisplayImage(i.getImage());
-            } catch (MalformedURLException ex) {
+                originalImage = ImageUtils.getBufferedImage(i.getImage());
+                
+                final BufferedImage binarizedImage = 
+                        ImageUtils.getBinary(originalImage, slider_imageBrightness.getValue());
+                
+                this.canvas_pic.setDisplayImage(binarizedImage);
+                this.canvas_pic.centerImage();
+                
+            } 
+            catch (MalformedURLException ex) {
                 JOptionPane.showMessageDialog(null, "Error en el formato o al encontrar la imagen.");
                 //Logger.getLogger(CargarImagenes.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -219,22 +334,31 @@ public class Vista extends javax.swing.JFrame {
         if(mouseLocationInImage != null){
             int newXLocation = evt.getX() + mouseLocationInImage.x;
             int newYLocation = evt.getY() + mouseLocationInImage.y;
-            int outsideAmmount = 30;
+            int outsideAmount = 10;
             
             //TODO: Fix behavior when mouse moves fast
-            if(newXLocation > 0 - outsideAmmount && newXLocation + canvas_pic.getImageWidth() < canvas_pic.getWidth() + outsideAmmount) {
+            
+            if(newXLocation > 0 - outsideAmount && newXLocation + canvas_pic.getImageWidth() < canvas_pic.getWidth() + outsideAmount) {
                 this.canvas_pic.setImageXCoordinate(newXLocation);
+                
+                //TODO: Verify whether it is in center
+                chk_centerH.setSelected(false);
+                chk_centerH.setEnabled(true);
             }
             
-            if(newYLocation > 0 - outsideAmmount && newYLocation + canvas_pic.getImageHeight() < canvas_pic.getHeight() + outsideAmmount) {
+            if(newYLocation > 0 - outsideAmount && newYLocation + canvas_pic.getImageHeight() < canvas_pic.getHeight() + outsideAmount) {
                 this.canvas_pic.setImageYCoordinate(newYLocation);
+                
+                chk_centerV.setSelected(false);
+                chk_centerV.setEnabled(true);
             }
         }
     }//GEN-LAST:event_canvas_picMouseDragged
 
     private void canvas_picMousePressed(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_canvas_picMousePressed
-
-        if(canvas_pic.getImageBounds().contains(evt.getPoint())){
+        Rectangle imageBounds = canvas_pic.getImageBounds();
+    
+        if(imageBounds != null && canvas_pic.getImageBounds().contains(evt.getPoint())){
             mouseLocationInImage = new Point(this.canvas_pic.getImageXCoordinate() - evt.getX(), 
                     this.canvas_pic.getImageYCoordinate() - evt.getY());
         }
@@ -254,6 +378,33 @@ public class Vista extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_canvas_picMouseMoved
 
+    private void slider_imageBrightnessStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slider_imageBrightnessStateChanged
+        if(originalImage != null) {
+            final BufferedImage changedBinarizedImage = ImageUtils.getBinary(originalImage, slider_imageBrightness.getValue());
+            this.canvas_pic.setDisplayImage(changedBinarizedImage);
+        }
+    }//GEN-LAST:event_slider_imageBrightnessStateChanged
+
+    private void slider_imageScaleStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slider_imageScaleStateChanged
+        this.canvas_pic.setImageScale(slider_imageScale.getValue());
+        this.canvas_pic.centerImage();
+    }//GEN-LAST:event_slider_imageScaleStateChanged
+
+    private void chk_centerHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chk_centerHActionPerformed
+        if(this.chk_centerH.isSelected()) {
+            this.canvas_pic.centerImageHorizontally();
+            this.chk_centerH.setEnabled(false);
+        }
+    }//GEN-LAST:event_chk_centerHActionPerformed
+
+    private void chk_centerVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chk_centerVActionPerformed
+        if(this.chk_centerV.isSelected()) {
+            this.canvas_pic.centerImageVertically();
+            this.chk_centerV.setEnabled(false);
+        }
+    }//GEN-LAST:event_chk_centerVActionPerformed
+
+    
     /**
      * @param args the command line arguments
      */
@@ -264,12 +415,15 @@ public class Vista extends javax.swing.JFrame {
          * For details see http://download.oracle.com/javase/tutorial/uiswing/lookandfeel/plaf.html 
          */
         try {
-            for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
+            /*for (javax.swing.UIManager.LookAndFeelInfo info : javax.swing.UIManager.getInstalledLookAndFeels()) {
                 if ("Nimbus".equals(info.getName())) {
                     javax.swing.UIManager.setLookAndFeel(info.getClassName());
                     break;
                 }
-            }
+            }*/
+            
+            UIManager.setLookAndFeel( UIManager.getSystemLookAndFeelClassName());
+            
         } catch (ClassNotFoundException ex) {
             java.util.logging.Logger.getLogger(Vista.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         } catch (InstantiationException ex) {
@@ -291,11 +445,20 @@ public class Vista extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private easypolly.ImageCanvas canvas_pic;
+    private javax.swing.JCheckBox chk_centerH;
+    private javax.swing.JCheckBox chk_centerV;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
+    private javax.swing.JLabel jLabel3;
+    private javax.swing.JLabel jLabel4;
+    private javax.swing.JLabel jLabel5;
+    private javax.swing.JLabel jLabel6;
     private javax.swing.JPanel jPanel2;
+    private javax.swing.JPanel panel_imageProperties;
     private rsbuttom.RSButtonMetro rSButtonMetro1;
     private rsbuttom.RSButtonMetro rSButtonMetro2;
     private rsbuttom.RSButtonMetro rSButtonMetro3;
+    private javax.swing.JSlider slider_imageBrightness;
+    private javax.swing.JSlider slider_imageScale;
     // End of variables declaration//GEN-END:variables
 }

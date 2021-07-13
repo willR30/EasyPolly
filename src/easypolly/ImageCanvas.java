@@ -16,43 +16,74 @@ public class ImageCanvas extends JPanel {
     private int imageXCoordinate = 0;
     private int imageYCoordinate = 0;
     private float imageRotationAngle = 0;
+    private float imageScale = 100f;
+    
+    private static final int TILE_SIZE = 32;
     
     @Override
     protected void paintComponent(Graphics g){
         super.paintComponent(g);
         
+        //Background
+        final int horizontalTiles = this.getWidth() / TILE_SIZE + 1;
+        final int verticalTiles = this.getWidth() / TILE_SIZE + 1;
+        
+        for(int row = 0; row <= verticalTiles; row++) {
+            for(int column = 0; column <= horizontalTiles; column++) {
+                if((row % 2 == 0 && column % 2 == 0) || (row % 2 != 0 && column % 2 != 0)) {
+                    g.setColor(Color.GRAY);
+                } else {
+                    g.setColor(Color.DARK_GRAY);
+                }
+                
+                //Alternate background effect
+                //g.fillRect(row * TILE_SIZE, column * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+                
+                g.fillRect(row * TILE_SIZE, column * TILE_SIZE, TILE_SIZE, TILE_SIZE);
+            }
+        }
+        
         if(displayImage != null) {
             //TODO: Apply transformation to rotate
-            g.drawImage(displayImage, imageXCoordinate, imageYCoordinate, this);
+            g.drawImage(displayImage, imageXCoordinate, imageYCoordinate, this.getImageWidth(), this.getImageHeight(), this);
         }
     }
     
+    public void centerImage() {
+        this.imageXCoordinate = Math.round(this.getWidth() / 2f) - Math.round(this.getImageWidth() / 2f);
+        this.imageYCoordinate = Math.round(this.getHeight() / 2f) - Math.round(this.getImageHeight() / 2f);
+        
+        this.repaint();
+    }
+    
+    public void centerImageVertically() {
+        this.imageYCoordinate = Math.round(this.getHeight() / 2f) - Math.round(this.getImageHeight() / 2f);
+        
+        this.repaint();
+    }
+    
+    public void centerImageHorizontally() {
+        this.imageXCoordinate = Math.round(this.getWidth() / 2f) - Math.round(this.getImageWidth() / 2f);
+        
+        this.repaint();
+    }
+    
     // <editor-fold defaultstate="collapsed" desc="Setters and Getters">
-    public Image getDisplayImage() {
+    public BufferedImage getDisplayImage() {
         return this.displayImage;
     }
     
     
     public void setDisplayImage(BufferedImage displayImage) {
         this.displayImage = displayImage;
-        this.imageXCoordinate = 0;
-        this.imageYCoordinate = 0;
         
         this.repaint();
     }
     
     public void setDisplayImage(Image displayImage) {
-        BufferedImage newBufferImage = new BufferedImage(displayImage.getWidth(null), displayImage.getHeight(null), BufferedImage.TYPE_INT_ARGB);
-
-        Graphics2D bufferGraphics = newBufferImage.createGraphics();
-        bufferGraphics.drawImage(displayImage, 0, 0, null);
-        bufferGraphics.dispose();
+        BufferedImage newBufferImage = ImageUtils.getBufferedImage(displayImage);
         
-        this.displayImage = newBufferImage;
-        this.imageXCoordinate = 0;
-        this.imageYCoordinate = 0;
-        
-        this.repaint();
+        this.setDisplayImage(displayImage);
     }
     
     public int getImageXCoordinate(){
@@ -76,23 +107,23 @@ public class ImageCanvas extends JPanel {
     }
     
     public int getImageRight() {
-        return this.displayImage == null? 0 : this.imageXCoordinate + this.displayImage.getWidth();
+        return this.displayImage == null? 0 : this.imageXCoordinate + this.getImageWidth();
     }
     
-    public int getImageLeft() {
-        return this.displayImage == null? 0 : this.imageYCoordinate + this.displayImage.getHeight();
+    public int getImageBottom() {
+        return this.displayImage == null? 0 : this.imageYCoordinate + this.getImageHeight();
     }
     
     public int getImageWidth() {
-        return this.displayImage == null? 0 : this.displayImage.getWidth();
+        return this.displayImage == null? 0 : Math.round(this.displayImage.getWidth() * this.imageScale / 100f);
     }
     
     public int getImageHeight() {
-        return this.displayImage == null? 0 : this.displayImage.getHeight();
+        return this.displayImage == null? 0 : Math.round(this.displayImage.getHeight() * this.imageScale / 100f);
     }
     
     public Rectangle getImageBounds(){
-        return this.displayImage == null? null : new Rectangle(this.imageXCoordinate, this.imageYCoordinate, this.displayImage.getWidth(), this.displayImage.getHeight());
+        return this.displayImage == null? null : new Rectangle(this.imageXCoordinate, this.imageYCoordinate, this.getImageWidth(), this.getImageHeight());
     }
     
     public float getImageRotationAngle(){
@@ -104,5 +135,16 @@ public class ImageCanvas extends JPanel {
         
         this.repaint();
     }
+    
+    public float getImageScale() {
+        return imageScale;
+    }
+
+    public void setImageScale(float imageScale) {
+        this.imageScale = imageScale;
+        
+        this.repaint();
+    }
+    
     // </editor-fold>  
 }
