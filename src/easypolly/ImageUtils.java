@@ -21,12 +21,15 @@ public class ImageUtils {
         return newBufferImage;
     }
 
-    public static BufferedImage getBinary(final BufferedImage image, final float brightnessPercentage) {
-        int h = image.getHeight();
-        int w = image.getWidth();
-
-        BufferedImage binarizedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+    public static BufferedImage getBinary(final BufferedImage image, final float brightnessPercentage, boolean invert) {
+        BufferedImage binarizedImage = null;
+        
         if (image != null) {
+            int h = image.getHeight();
+            int w = image.getWidth();
+
+            binarizedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+        
             for (int i = 0; i < w; i++) {
                 for (int j = 0; j < h; j++) {
 
@@ -42,15 +45,79 @@ public class ImageUtils {
                     //(255+255+255)/2 = 283 middle of dark and light
                     if (m >= darknessValue) {
                         // for light color it sets white
-                        binarizedImage.setRGB(i, j, Color.WHITE.getRGB());
+                        binarizedImage.setRGB(i, j, invert? Color.BLACK.getRGB() : Color.WHITE.getRGB());
                     } else {
                         // for dark color it will set black
-                        binarizedImage.setRGB(i, j, 0);
+                        binarizedImage.setRGB(i, j, invert? Color.WHITE.getRGB() : Color.BLACK.getRGB());
                     }
                 }
             }
         }
         
         return binarizedImage;
+    }
+    
+    public static BufferedImage getBinary(final BufferedImage image, 
+                final float brightnessPercentage, final Color lightColor, final Color darkColor, boolean invert) {
+        BufferedImage binarizedImage = null;
+        
+        if (image != null) {
+            int h = image.getHeight();
+            int w = image.getWidth();
+
+            binarizedImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_RGB);
+        
+            for (int i = 0; i < w; i++) {
+                for (int j = 0; j < h; j++) {
+
+                    //Get RGB Value
+                    int val = image.getRGB(i, j);
+                    //Convert to three separate channels
+                    int r = (0x00ff0000 & val) >> 16;
+                    int g = (0x0000ff00 & val) >> 8;
+                    int b = (0x000000ff & val);
+                    int m = (r + g + b);
+                    
+                    //(255+255+255)/2 = 283 middle of dark and light
+                    final int darknessValue = Math.round((255 * 3) * ((100 - brightnessPercentage) / 100));
+                    
+                    if (m >= darknessValue) {
+                        //light color
+                        binarizedImage.setRGB(i, j, invert? darkColor.getRGB() : lightColor.getRGB());
+                    } else {
+                        //dark color
+                        binarizedImage.setRGB(i, j, invert? lightColor.getRGB() : darkColor.getRGB());
+                    }
+                }
+            }
+        }
+        
+        return binarizedImage;
+    }
+    
+    public static BufferedImage clearColor(final BufferedImage image, final Color color) {
+        BufferedImage transparentImage = null;
+        
+        if (image != null) {
+            int h = image.getHeight();
+            int w = image.getWidth();
+
+            transparentImage = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        
+            for (int i = 0; i < w; i++) {
+                for (int j = 0; j < h; j++) {
+                    //Get RGB Value
+                    int val = image.getRGB(i, j);
+                    
+                    if(val != color.getRGB()) {
+                        transparentImage.setRGB(i, j, val);
+                    } else {
+                        continue;
+                    }
+                }
+            }
+        }
+        
+        return transparentImage;
     }
 }

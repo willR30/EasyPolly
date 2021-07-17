@@ -16,9 +16,13 @@ public class ImageCanvas extends JPanel {
     private int imageXCoordinate = 0;
     private int imageYCoordinate = 0;
     private float imageRotationAngle = 0;
-    private float imageScale = 100f;
+    private float imageScale = 50f;
+    
+    private boolean darkBackground = true;
     
     private static final int TILE_SIZE = 32;
+    
+    
     
     @Override
     protected void paintComponent(Graphics g){
@@ -31,12 +35,12 @@ public class ImageCanvas extends JPanel {
         for(int row = 0; row <= verticalTiles; row++) {
             for(int column = 0; column <= horizontalTiles; column++) {
                 if((row % 2 == 0 && column % 2 == 0) || (row % 2 != 0 && column % 2 != 0)) {
-                    g.setColor(Color.GRAY);
+                    g.setColor(darkBackground? Color.GRAY : Color.LIGHT_GRAY);
                 } else {
-                    g.setColor(Color.DARK_GRAY);
+                    g.setColor(darkBackground? Color.DARK_GRAY : Color.WHITE);
                 }
                 
-                //Alternate background effect
+                //Alternative background effect
                 //g.fillRect(row * TILE_SIZE, column * TILE_SIZE, TILE_SIZE, TILE_SIZE);
                 
                 g.fillRect(row * TILE_SIZE, column * TILE_SIZE, TILE_SIZE, TILE_SIZE);
@@ -44,8 +48,14 @@ public class ImageCanvas extends JPanel {
         }
         
         if(displayImage != null) {
+            g.setColor(darkBackground? new Color(255, 255, 255, 60) : new Color(0, 0, 0, 90));
+            g.fillRect(imageXCoordinate, imageYCoordinate, this.getImageWidth(), this.getImageHeight());
+            
             //TODO: Apply transformation to rotate
             g.drawImage(displayImage, imageXCoordinate, imageYCoordinate, this.getImageWidth(), this.getImageHeight(), this);
+            
+            //g.setColor(Color.red);
+            //g.drawRect(imageXCoordinate, imageYCoordinate, this.getImageWidth(), this.getImageHeight());
         }
     }
     
@@ -84,6 +94,20 @@ public class ImageCanvas extends JPanel {
         BufferedImage newBufferImage = ImageUtils.getBufferedImage(displayImage);
         
         this.setDisplayImage(displayImage);
+    }
+
+    public boolean isDarkBackground() {
+        return darkBackground;
+    }
+
+    public void setDarkBackground(boolean darkBackground) {
+        final boolean isDifferent = this.darkBackground != darkBackground;
+        
+        if(isDifferent) {
+            this.darkBackground = darkBackground;
+        
+            this.repaint();
+        }
     }
     
     public int getImageXCoordinate(){
