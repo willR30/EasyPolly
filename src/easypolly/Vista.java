@@ -5,6 +5,7 @@
  */
 package easypolly;
 
+import com.sun.tools.javac.util.ArrayUtils;
 import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Image;
@@ -13,6 +14,8 @@ import java.awt.Rectangle;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.net.MalformedURLException;
+import java.util.ArrayList;
+import java.util.Arrays;
 import javax.swing.ImageIcon;
 import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
@@ -95,7 +98,7 @@ public class Vista extends javax.swing.JFrame {
         slider_imageBrightness.setBackground(new java.awt.Color(210, 210, 210));
         slider_imageBrightness.setPaintLabels(true);
         slider_imageBrightness.setPaintTicks(true);
-        slider_imageBrightness.setToolTipText("");
+        slider_imageBrightness.setToolTipText("50%");
         slider_imageBrightness.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 slider_imageBrightnessStateChanged(evt);
@@ -109,7 +112,8 @@ public class Vista extends javax.swing.JFrame {
         slider_imageScale.setMinimum(25);
         slider_imageScale.setPaintLabels(true);
         slider_imageScale.setPaintTicks(true);
-        slider_imageScale.setToolTipText("");
+        slider_imageScale.setToolTipText("100%");
+        slider_imageScale.setValue(100);
         slider_imageScale.addChangeListener(new javax.swing.event.ChangeListener() {
             public void stateChanged(javax.swing.event.ChangeEvent evt) {
                 slider_imageScaleStateChanged(evt);
@@ -468,6 +472,19 @@ public class Vista extends javax.swing.JFrame {
                 i = new ImageIcon(f.toURI().toURL());
                 originalImage = ImageUtils.getBufferedImage(i.getImage());
                 
+                int newScale = 100;
+                
+                //If the image does not fit in screen, we scale it
+                if(originalImage.getWidth() > this.canvas_pic.getWidth()) {
+                    newScale = Math.round(this.canvas_pic.getWidth() / ((float)originalImage.getWidth()) * 100);
+                } 
+                else if(originalImage.getHeight() > this.canvas_pic.getHeight()) {
+                    newScale = Math.round(this.canvas_pic.getHeight() / ((float)originalImage.getHeight()) * 100);
+                }
+                
+                this.slider_imageScale.setValue(newScale);
+                this.canvas_pic.setImageScale(newScale);
+                
                 this.processAndSetImage(originalImage);
                 this.canvas_pic.centerImage();
                 this.displayImageLocation();
@@ -496,6 +513,13 @@ public class Vista extends javax.swing.JFrame {
             
             this.setImageXLocation(newXLocation);
             this.setImageYLocation(newYLocation);
+            
+            Rectangle imageBounds = canvas_pic.getImageBounds();
+            
+            if(imageBounds != null && canvas_pic.getImageBounds().contains(evt.getPoint())){
+            mouseLocationInImage = new Point(this.canvas_pic.getImageX() - evt.getX(), 
+                    this.canvas_pic.getImageY() - evt.getY());
+            }
         }
     }//GEN-LAST:event_canvas_picMouseDragged
 
@@ -503,8 +527,8 @@ public class Vista extends javax.swing.JFrame {
         Rectangle imageBounds = canvas_pic.getImageBounds();
     
         if(imageBounds != null && canvas_pic.getImageBounds().contains(evt.getPoint())){
-            mouseLocationInImage = new Point(this.canvas_pic.getImageXCoordinate() - evt.getX(), 
-                    this.canvas_pic.getImageYCoordinate() - evt.getY());
+            mouseLocationInImage = new Point(this.canvas_pic.getImageX() - evt.getX(), 
+                    this.canvas_pic.getImageY() - evt.getY());
         }
     }//GEN-LAST:event_canvas_picMousePressed
 
@@ -523,8 +547,10 @@ public class Vista extends javax.swing.JFrame {
     }//GEN-LAST:event_canvas_picMouseMoved
 
     private void slider_imageBrightnessStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slider_imageBrightnessStateChanged
-        
+
         processAndSetImage(originalImage);
+        
+        this.slider_imageBrightness.setToolTipText(this.slider_imageBrightness.getValue() + "%");
     }//GEN-LAST:event_slider_imageBrightnessStateChanged
 
     private void slider_imageScaleStateChanged(javax.swing.event.ChangeEvent evt) {//GEN-FIRST:event_slider_imageScaleStateChanged
@@ -538,6 +564,8 @@ public class Vista extends javax.swing.JFrame {
         this.chk_centerV.setEnabled(false);
         
         this.displayImageLocation();
+        
+        this.slider_imageScale.setToolTipText(this.slider_imageScale.getValue() + "%");
     }//GEN-LAST:event_slider_imageScaleStateChanged
 
     private void chk_centerHActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chk_centerHActionPerformed
@@ -599,8 +627,6 @@ public class Vista extends javax.swing.JFrame {
             this.setImageYLocation((int) this.spin_imageBottom.getValue() - this.canvas_pic.getImageHeight());
     }//GEN-LAST:event_spin_imageBottomStateChanged
 
-    
-    
     private void processAndSetImage(BufferedImage image) {
         if(image != null) {
             final Color chromaKey = this.imageColor.equals(Color.WHITE)? Color.BLACK : Color.WHITE;
@@ -688,12 +714,51 @@ public class Vista extends javax.swing.JFrame {
     private void displayImageLocation() {
         this.listenToPositionChanges = false;
         
-        this.spin_imageX.setValue(this.canvas_pic.getImageXCoordinate());
-        this.spin_imageY.setValue(this.canvas_pic.getImageYCoordinate());
+        this.spin_imageX.setValue(this.canvas_pic.getImageX());
+        this.spin_imageY.setValue(this.canvas_pic.getImageY());
         this.spin_imageRight.setValue(this.canvas_pic.getImageRight());
         this.spin_imageBottom.setValue(this.canvas_pic.getImageBottom());
         
         this.listenToPositionChanges = true;
+    }
+    
+    private int[] getImageAsPixelArray() {
+        if(this.originalImage != null) {
+            //TODO: Check if it is memory-efficient to initialize the arraylist this way
+            final ArrayList<Integer> pixelArrayList = 
+                    new ArrayList(originalImage.getWidth() + originalImage.getHeight() / 2);
+            
+            BufferedImage transformedImage = 
+                    ImageUtils.getScaledImage(this.canvas_pic.getDisplayImage(), this.canvas_pic.getImageScale() / 100f);
+            //System.out.println("Image size: " + transformedImage.getWidth() + ", " + transformedImage.getHeight());
+            
+            for(int y = 0; y < transformedImage.getHeight(); y++) {
+                for(int x = 0; x < transformedImage.getWidth(); x++) {
+                    
+                    int currentPixel = transformedImage.getRGB(x,y);
+                    //If current pixel is not transparent
+                    if( (currentPixel>>24) != 0x00 ) {
+                        pixelArrayList.add(this.canvas_pic.getImageX() + x);
+                        pixelArrayList.add(this.canvas_pic.getImageY() + y);
+                    }
+                }
+            }
+            
+            pixelArrayList.trimToSize();
+            
+            final int[] pixelArray = new int[pixelArrayList.size()];
+            //System.out.println("Array size: " + pixelArray.length);
+            
+            for(int i = 0; i < pixelArray.length; i++) {
+                pixelArray[i] = pixelArrayList.get(i);
+            }
+            
+            pixelArrayList.clear();
+            
+            return pixelArray;
+        }
+        
+        return null;
     }
     
     /**
