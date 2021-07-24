@@ -3,7 +3,9 @@ package easypolly;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RenderingHints;
 import java.awt.image.BufferedImage;
+import java.awt.image.AffineTransformOp;
 
 /**
  *
@@ -119,5 +121,20 @@ public class ImageUtils {
         }
         
         return transparentImage;
+    }
+    
+    public static BufferedImage getScaledImage(final BufferedImage original, float scaleFactor) {
+        final int newWidth = Math.round(original.getWidth() * scaleFactor);
+        final int newHeight = Math.round(original.getHeight() * scaleFactor);
+        
+        BufferedImage resized = new BufferedImage(newWidth, newHeight, original.getType());
+        Graphics2D g = resized.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_INTERPOLATION,
+            RenderingHints.VALUE_INTERPOLATION_BILINEAR);
+        g.drawImage(original, 0, 0, newWidth, newHeight, 0, 0, original.getWidth(),
+            original.getHeight(), null);
+        g.dispose();
+        
+        return resized;
     }
 }

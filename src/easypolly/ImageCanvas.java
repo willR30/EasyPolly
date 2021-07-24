@@ -16,11 +16,11 @@ public class ImageCanvas extends JPanel {
     private int imageXCoordinate = 0;
     private int imageYCoordinate = 0;
     private float imageRotationAngle = 0;
-    private float imageScale = 50f;
+    private float imageScale = 100f;
     
     private boolean darkBackground = true;
-    
     private static final int TILE_SIZE = 32;
+    private boolean showGuides = true;
     
     
     
@@ -56,6 +56,70 @@ public class ImageCanvas extends JPanel {
             
             //g.setColor(Color.red);
             //g.drawRect(imageXCoordinate, imageYCoordinate, this.getImageWidth(), this.getImageHeight());
+        }
+        
+        if(showGuides) {
+            //Draw metric guides
+            //Distance in pixels
+            final int smallGuidesDistance = 10;
+            //Distance per small guides
+            final int bigGuidesDistance = 5;
+            final int smallGuidesSize = 7;
+            final int bigGuidesSize = 15;
+            final Font guidesFont = new Font("Consolas", Font.PLAIN, 10);
+            final FontMetrics guideFontMetrics = g.getFontMetrics(guidesFont);
+
+            //Image guides
+            if(this.displayImage != null) {
+                g.setColor(new Color(0, 128, 255));
+                if(this.getImageY() > smallGuidesSize) {
+                    g.fillRect(this.getImageX(), 0, this.getImageWidth(), 5);
+                }
+                if(this.getImageBottom() < this.getHeight() - smallGuidesSize) {
+                    g.fillRect(this.getImageX(), this.getHeight() - 5, this.getImageWidth(), 5);
+                }
+                if(this.getImageX() > smallGuidesSize) {
+                    g.fillRect(0, this.getImageY(), 5, this.getImageHeight());
+                }
+                if(this.getImageRight() < this.getWidth() - smallGuidesSize) {
+                    g.fillRect(this.getWidth() - 5, this.getImageY(), 5, this.getImageHeight());
+                }
+            }
+
+            //Horizontal guides
+            g.setColor(darkBackground? Color.WHITE : Color.BLACK);
+            g.setFont(guidesFont);
+
+            for(int i = 1; i < Math.round(this.getWidth() / smallGuidesDistance); i ++) {
+                int x = i * smallGuidesDistance;
+
+                if(i % bigGuidesDistance == 0) {
+                    g.drawLine(x, 0, x, bigGuidesSize);
+                    g.drawLine(x, this.getHeight(), x, this.getHeight() - bigGuidesSize);
+
+                    g.drawString(String.valueOf(x), x + 2, bigGuidesSize + (guideFontMetrics.getHeight() / 2));
+                    g.drawString(String.valueOf(x), x + 2, this.getHeight() - bigGuidesSize + (guideFontMetrics.getHeight() / 2));
+                } else {
+                    g.drawLine(x, 0, x, smallGuidesSize);
+                    g.drawLine(x, this.getHeight(), x, this.getHeight() - smallGuidesSize);
+                }
+            }
+
+            //Vertical guides
+            for(int i = 1; i < Math.round(this.getHeight() / smallGuidesDistance); i++) {
+                int y = i * smallGuidesDistance;
+
+                if(i % bigGuidesDistance == 0) {
+                    g.drawLine(0, y, bigGuidesSize, y);
+                    g.drawLine(getWidth(), y, getWidth() - bigGuidesSize, y);
+
+                    g.drawString(String.valueOf(y), bigGuidesSize - (guideFontMetrics.stringWidth(String.valueOf(y)) / 2), y - 2);
+                    g.drawString(String.valueOf(y), this.getWidth() - bigGuidesSize - (guideFontMetrics.stringWidth(String.valueOf(y)) / 2), y - 2);
+                } else {
+                    g.drawLine(0, y, smallGuidesSize, y);
+                    g.drawLine(getWidth(), y, getWidth() - smallGuidesSize, y);
+                }
+            }
         }
     }
     
@@ -110,7 +174,7 @@ public class ImageCanvas extends JPanel {
         }
     }
     
-    public int getImageXCoordinate(){
+    public int getImageX(){
         return this.imageXCoordinate;
     }
     
@@ -120,7 +184,7 @@ public class ImageCanvas extends JPanel {
         this.repaint();
     }
     
-    public int getImageYCoordinate(){
+    public int getImageY(){
         return this.imageYCoordinate;
     }
     
@@ -170,5 +234,15 @@ public class ImageCanvas extends JPanel {
         this.repaint();
     }
     
+    public boolean isShowingGuides() {
+        return showGuides;
+    }
+
+    public void setShowGuides(boolean showGuides) {
+        this.showGuides = showGuides;
+    }
+    
     // </editor-fold>  
+
+    
 }
